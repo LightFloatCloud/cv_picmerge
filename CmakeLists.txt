@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(CV_PICMERGE)
+
+if(CMAKE_HOST_WIN32)
+    message(STATUS "System is WIN32, path of opencv need to set manually.")
+    set(OpenCV_DIR "E:/Lib/opencv3/build/x64/vc15/lib")
+endif()
+
+find_package(opencv 3 REQUIRED)
+
+
+
