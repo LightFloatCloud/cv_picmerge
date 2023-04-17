@@ -4,7 +4,8 @@
 
 *.jpg
 *.png
-
+!kurisu1.jpg
+!kurisu2.jpg
 
 
 
