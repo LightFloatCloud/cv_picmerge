@@ -1,5 +1,10 @@
-
+/bin/
 /build/
+/.vscode/
+
+*.jpg
+*.png
+
 
 
 
