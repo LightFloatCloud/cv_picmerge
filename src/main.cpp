@@ -123,7 +123,7 @@ int main(int argc, const char * argv[])
         points2.push_back(keypoints2[bestMatches[i].trainIdx].pt);
     }
     Mat H = findHomography(points2, points1, RANSAC);
-
+    cout << "H:" <<endl<< H <<endl;
 
 
     // 融合两幅图片
@@ -131,16 +131,20 @@ int main(int argc, const char * argv[])
     int x_offset=(int)H.at<double>(0,2);
     int y_offset=(int)H.at<double>(1,2);
     int x_merged, y_merged;
-    int roix_start, roiy_start;
+    int roix_start, roiy_start; //纠正量
+        
+    Mat T = Mat::eye(3, 3, H.type());
+    
     if(x_offset > 0)
     {
         x_merged = MAX(image1.cols, image2.cols + x_offset);
         roix_start = 0;
     }
-    else
+    else 
     {
         x_merged = MAX(image2.cols, image1.cols - x_offset);
         roix_start = -x_offset;
+        T.at<double>(0,2) = -H.at<double>(0,2);
     }
     if(y_offset > 0)
     {
@@ -151,13 +155,17 @@ int main(int argc, const char * argv[])
     {
         y_merged = MAX(image2.rows, image1.rows - y_offset);
         roiy_start = -y_offset;
+        T.at<double>(1,2) = -H.at<double>(1,2);
     }
-    H.at<double>(0,2) = H.at<double>(0,2) + (double)roix_start; 
-    H.at<double>(1,2) = H.at<double>(1,2) + (double)roiy_start;
+    
+    // H.at<double>(0,2) = H.at<double>(0,2) + (double)roix_start; 
+    // H.at<double>(1,2) = H.at<double>(1,2) + (double)roiy_start;
+    //cout << H.type() <<endl;
+    H = T*H;
+
     warpPerspective(image2, blendedImage, H, Size(x_merged, y_merged),cv::INTER_LINEAR,cv::BORDER_REPLICATE);
     Mat roi(blendedImage, Rect(roix_start, roiy_start, image1.cols, image1.rows));
     image1.copyTo(roi);
-    
 
     // 显示融合后的图片
     namedWindow("Blended Image", WINDOW_NORMAL);
