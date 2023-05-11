@@ -16,7 +16,12 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -Wall -fexec-charset=GBK")
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
 #set(OpenCV_STATIC ON)
 
-find_package(OpenCV 4 REQUIRED)
+if(CMAKE_HOST_WIN32)
+    find_package(OpenCV 4 REQUIRED)
+else()
+    find_package(OpenCV 3 REQUIRED)
+endif()
+
 message(STATUS "OpenCV library status:")
 message(STATUS "  version: ${OpenCV_VERSION}")
 message(STATUS "  libraries: ${OpenCV_LIBS}")
